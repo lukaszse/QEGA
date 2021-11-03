@@ -1,23 +1,21 @@
 package pl.com.seremak.model;
 
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
 import lombok.Getter;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Getter
 public class Population {
 
-    private List<Individual> individuals;
+    private final List<Individual> individuals;
 
     Population(final int individualsNumber) {
         this.individuals = generatePopulation(individualsNumber);
     }
 
     private static List<Individual> generatePopulation(final int individualsNumber) {
-        return IntStream.range(0, individualsNumber)
-                .mapToObj(i -> new Individual())
-                .collect(Collectors.toList());
+         return Stream.range(0, individualsNumber)
+                .map(i -> new Individual())
+                 .collect(List.collector());
     }
 }

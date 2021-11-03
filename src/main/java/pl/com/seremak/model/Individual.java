@@ -5,7 +5,6 @@ import io.vavr.collection.Stream;
 import lombok.Data;
 
 import java.util.Random;
-import java.util.stream.IntStream;
 
 @Data
 public class Individual {
