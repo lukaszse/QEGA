@@ -3,13 +3,9 @@ package pl.com.seremak
 import io.micronaut.configuration.picocli.PicocliRunner
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
-
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
-
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
 
 class QEGACommandSpec extends Specification {
 
@@ -20,11 +16,11 @@ class QEGACommandSpec extends Specification {
         ByteArrayOutputStream baos = new ByteArrayOutputStream()
         System.setOut(new PrintStream(baos))
 
-        String[] args = ['-v'] as String[]
+
+        String[] args = [] as String[]
         PicocliRunner.run(QEGACommand, ctx, args)
 
         expect:
-        baos.toString().contains('Hi!')
+        baos.toString().contains('QEGA application started')
     }
 }
-
