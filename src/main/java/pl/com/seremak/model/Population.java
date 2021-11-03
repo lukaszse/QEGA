@@ -1,7 +1,6 @@
-package pl.com.seremak;
+package pl.com.seremak.model;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;

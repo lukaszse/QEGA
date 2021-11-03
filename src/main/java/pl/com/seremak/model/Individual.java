@@ -1,9 +1,9 @@
-package pl.com.seremak;
+package pl.com.seremak.model;
 
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -17,17 +17,15 @@ public class Individual {
     }
 
     public int toInt() {
-        return IntStream.range(0, 8)
+        return Stream.range(0, 8)
                 .map(i -> booleanToInt(individual.get(7-i))* (int) Math.pow(2, i))
-                .sum();
+                .sum().intValue();
     }
 
     private List<Boolean> generateIndividual() {
-        var individual = new ArrayList<Boolean>();
         var random = new Random();
-        IntStream.range(0, 8)
-                .forEach( i -> individual.add(random.nextBoolean()));
-        return individual;
+        return List.range(0, 8)
+                .map(i -> random.nextBoolean());
     }
 
     private int booleanToInt(final boolean bool) {

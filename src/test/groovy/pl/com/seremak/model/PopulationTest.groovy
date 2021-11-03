@@ -1,5 +1,6 @@
-package pl.com.seremak
+package pl.com.seremak.model
 
+import pl.com.seremak.model.Population
 import spock.lang.Specification
 
 class PopulationTest extends Specification {

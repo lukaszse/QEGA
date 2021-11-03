@@ -1,5 +1,7 @@
-package pl.com.seremak
+package pl.com.seremak.model
 
+import io.vavr.collection.List
+import pl.com.seremak.model.Individual
 import spock.lang.Specification
 
 class IndividualTest extends Specification {
