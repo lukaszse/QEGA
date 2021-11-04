@@ -3,26 +3,55 @@ package pl.com.seremak.service;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.collection.List;
-import lombok.Data;
 import pl.com.seremak.model.Individual;
 import pl.com.seremak.model.Population;
 
 import java.util.Random;
 
-@Data
 public class InterbreedingService {
+
+    private static final int DRAW_RANGE = 1000000;
 
     private List<Individual> parentPopulation;
     private List<Individual> childPopulation;
+    private final double interbreedingProbability;
     private final Random random;
 
-    InterbreedingService(Population parentPopulation) {
+    InterbreedingService(final Population parentPopulation, final double interbreedingProbability) {
         this.parentPopulation = List.ofAll(parentPopulation.getIndividuals());
+        this.interbreedingProbability = interbreedingProbability;
+        this.childPopulation = List.empty();
         this.random = new Random();
     }
 
-    public Tuple2<Individual, Individual> drawIndividualPair() {
+
+    public List<Individual> performInterbreedingInPopulation() {
+        while (parentPopulation.length() > 1) {
+            var drawnPair = drawIndividualPair();
+            var interbreedingResult = drawIfInterbreed() ?
+                    interbreedPair(drawnPair).apply(List::of) :
+                    drawnPair.apply(List::of);
+            childPopulation = childPopulation.appendAll(interbreedingResult);
+        }
+        if(parentPopulation.length() == 1) {
+            childPopulation = childPopulation.appendAll(parentPopulation);
+        }
+        return childPopulation;
+    }
+
+    private Tuple2<Individual, Individual> drawIndividualPair() {
         return Tuple.of(getAndRemove(drawIndex()), getAndRemove(drawIndex()));
+    }
+
+    private Tuple2<Individual, Individual> interbreedPair(final Tuple2<Individual, Individual> individualPair) {
+        final int drawCuttingPoint = drawCuttingPoint();
+        final Individual child1 = new Individual(
+                individualPair._1.getIndividual().take(drawCuttingPoint)
+                        .appendAll(individualPair._2.getIndividual().takeRight(8 - drawCuttingPoint)));
+        final Individual child2 = new Individual(
+                individualPair._2.getIndividual().take(drawCuttingPoint)
+                        .appendAll(individualPair._1.getIndividual().takeRight(8 - drawCuttingPoint)));
+        return Tuple.of(child1, child2);
     }
 
     private Individual getAndRemove(final int index) {
@@ -31,15 +60,15 @@ public class InterbreedingService {
         return individual;
     }
 
+    private boolean drawIfInterbreed() {
+        return random.nextFloat() <= interbreedingProbability;
+    }
+
     private int drawCuttingPoint() {
-        return draw(7) + 1;
+        return random.nextInt(7) + 1;
     }
 
     private int drawIndex() {
-        return draw(parentPopulation.size());
-    }
-
-    private int draw(final int size) {
-        return random.nextInt(size);
+        return random.nextInt(parentPopulation.size());
     }
 }

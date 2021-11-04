@@ -15,6 +15,10 @@ public class Individual {
         this.individual = generateIndividual();
     }
 
+    public Individual(List<Boolean> individual) {
+        this.individual = individual;
+    }
+
     public int toInt() {
         return Stream.range(0, 8)
                 .map(i -> booleanToInt(individual.get(7-i))* (int) Math.pow(2, i))
