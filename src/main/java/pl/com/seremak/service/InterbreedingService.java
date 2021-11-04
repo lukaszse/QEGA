@@ -10,8 +10,6 @@ import java.util.Random;
 
 public class InterbreedingService {
 
-    private static final int DRAW_RANGE = 1000000;
-
     private List<Individual> parentPopulation;
     private List<Individual> childPopulation;
     private final double interbreedingProbability;
@@ -24,19 +22,18 @@ public class InterbreedingService {
         this.random = new Random();
     }
 
-
     public List<Individual> performInterbreedingInPopulation() {
         while (parentPopulation.length() > 1) {
-            var drawnPair = drawIndividualPair();
-            var interbreedingResult = drawIfInterbreed() ?
-                    interbreedPair(drawnPair).apply(List::of) :
-                    drawnPair.apply(List::of);
-            childPopulation = childPopulation.appendAll(interbreedingResult);
+            var interbreedingResult = interbreedPairOrCopyParents(drawIndividualPair());
+            childPopulation = childPopulation.appendAll(interbreedingResult.apply(List::of));
         }
-        if(parentPopulation.length() == 1) {
-            childPopulation = childPopulation.appendAll(parentPopulation);
-        }
-        return childPopulation;
+        return childPopulation = childPopulation.appendAll(parentPopulation);
+    }
+
+    private Tuple2<Individual, Individual> interbreedPairOrCopyParents(final Tuple2<Individual, Individual> drawnPair) {
+        return drawIfInterbreed() ?
+                interbreedPair(drawnPair) :
+                drawnPair;
     }
 
     private Tuple2<Individual, Individual> drawIndividualPair() {
