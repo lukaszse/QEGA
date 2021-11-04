@@ -28,14 +28,10 @@ public class MutationService {
 
     private Individual mutateIndividual(final Individual individual) {
         return new Individual(individual.getIndividual()
-                .map(gene -> drawIfMutated() != gene));
+                .map(gene -> drawToMutation() != gene));
     }
 
-    private Boolean mutateGeneIfDrawn(final Boolean gene) {
-        return drawIfMutated() != gene;
-    }
-
-    private boolean drawIfMutated() {
+    private boolean drawToMutation() {
         return random.nextFloat() <= mutationProbability;
     }
 

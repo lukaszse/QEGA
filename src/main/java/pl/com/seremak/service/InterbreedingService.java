@@ -31,7 +31,7 @@ public class InterbreedingService {
     }
 
     private Tuple2<Individual, Individual> interbreedPairOrCopyParents(final Tuple2<Individual, Individual> drawnPair) {
-        return drawIfInterbreed() ?
+        return drawToInterbreed() ?
                 interbreedPair(drawnPair) :
                 drawnPair;
     }
@@ -42,13 +42,11 @@ public class InterbreedingService {
 
     private Tuple2<Individual, Individual> interbreedPair(final Tuple2<Individual, Individual> individualPair) {
         final int drawCuttingPoint = drawCuttingPoint();
-        final Individual child1 = new Individual(
-                individualPair._1.getIndividual().take(drawCuttingPoint)
-                        .appendAll(individualPair._2.getIndividual().takeRight(8 - drawCuttingPoint)));
-        final Individual child2 = new Individual(
-                individualPair._2.getIndividual().take(drawCuttingPoint)
-                        .appendAll(individualPair._1.getIndividual().takeRight(8 - drawCuttingPoint)));
-        return Tuple.of(child1, child2);
+        final List<Boolean> child1 = individualPair._1.getIndividual().take(drawCuttingPoint)
+                .appendAll(individualPair._2.getIndividual().takeRight(8 - drawCuttingPoint));
+        final List<Boolean> child2 = individualPair._2.getIndividual().take(drawCuttingPoint)
+                .appendAll(individualPair._1.getIndividual().takeRight(8 - drawCuttingPoint));
+        return Tuple.of(new Individual(child1), new Individual(child2));
     }
 
     private Individual getAndRemove(final int index) {
@@ -57,7 +55,7 @@ public class InterbreedingService {
         return individual;
     }
 
-    private boolean drawIfInterbreed() {
+    private boolean drawToInterbreed() {
         return random.nextFloat() <= interbreedingProbability;
     }
 
