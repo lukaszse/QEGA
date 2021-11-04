@@ -8,7 +8,7 @@ class PopulationTest extends Specification {
     def 'should generate population with correct number of individuals'() {
 
         when:
-        var population = new Population(individualsNumber as int)
+        def population = new Population(individualsNumber as int)
 
         then:
         population.getIndividuals().size() == individualsNumber

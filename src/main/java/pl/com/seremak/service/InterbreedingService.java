@@ -2,12 +2,11 @@ package pl.com.seremak.service;
 
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
+import io.vavr.collection.List;
 import lombok.Data;
 import pl.com.seremak.model.Individual;
 import pl.com.seremak.model.Population;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 @Data
@@ -18,7 +17,7 @@ public class InterbreedingService {
     private final Random random;
 
     InterbreedingService(Population parentPopulation) {
-        this.parentPopulation = new LinkedList<>(parentPopulation.getIndividuals());
+        this.parentPopulation = List.ofAll(parentPopulation.getIndividuals());
         this.random = new Random();
     }
 
@@ -28,7 +27,7 @@ public class InterbreedingService {
 
     private Individual getAndRemove(final int index) {
         var individual = parentPopulation.get(index);
-        parentPopulation.remove(index);
+        parentPopulation = parentPopulation.removeAt(index);
         return individual;
     }
 

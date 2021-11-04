@@ -1,10 +1,8 @@
 package pl.com.seremak.model;
 
+import io.vavr.collection.List;
+import io.vavr.collection.Stream;
 import lombok.Data;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Data
 public class Population {
@@ -16,8 +14,8 @@ public class Population {
     }
 
     private static List<Individual> generatePopulation(final int individualsNumber) {
-         return IntStream.range(0, individualsNumber)
-                .mapToObj(i -> new Individual())
-                 .collect(Collectors.toList());
+         return Stream.range(0, individualsNumber)
+                .map(i -> new Individual())
+                 .collect(List.collector());
     }
 }
