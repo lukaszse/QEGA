@@ -1,13 +1,9 @@
 package pl.com.seremak;
 
 import io.micronaut.configuration.picocli.PicocliRunner;
-
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 
 @Slf4j
 @Command(name = "QEGA", description = "This is application for finding minimum of quadratic function with use of genetic algorithm",
