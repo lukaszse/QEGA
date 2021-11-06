@@ -19,9 +19,8 @@ public class MutationService {
         this.random = new Random();
     }
 
-    public List<Individual> performMutation(final Population population) {
+    public List<Individual> performMutation(final List<Individual> population) {
         return population
-                .getIndividuals()
                 .map(this::mutateIndividual);
     }
 

@@ -1,6 +1,7 @@
 package pl.com.seremak.service;
 
 import io.micronaut.runtime.context.scope.ThreadLocal;
+import io.vavr.collection.Stream;
 import jakarta.inject.Singleton;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,21 @@ public class GeneticAlgorithmService {
     private InputParameters inputParameters;
 
 
-    final void run() {
+    public final void run() {
+        setInputParameters(inputParameters);
+        population.generatePopulation(inputParameters.getIndividualsNumber());
+
+    }
+
+    private void setParameters(final InputParameters inputParameters) {
         population.generatePopulation(inputParameters.getIndividualsNumber());
         interbreedingService.setInterbreedingProbability(inputParameters.getInterbreedingProbability());
+        mutationService.setMutationProbability(inputParameters.getMutationProbability());
+    }
 
+    private Population createNextGeneration() {
+        var children = interbreedingService.performInterbreedingInPopulation(population);
+        var mutatedChildren = mutationService.performMutation(children);
+        return null;
     }
 }

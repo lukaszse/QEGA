@@ -48,6 +48,7 @@ public class QEGACommand implements Runnable {
                         .mutationProbability(mutationProbability)
                         .build());
 
+        geneticAlgorithmService.run();
     }
 
     private static void validateInput(final int populationsNumber, final int individualsNumber) {
