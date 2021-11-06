@@ -1,13 +1,14 @@
 package pl.com.seremak.service;
 
 import io.micronaut.runtime.context.scope.ThreadLocal;
+import jakarta.inject.Singleton;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import pl.com.seremak.model.InputParameters;
 import pl.com.seremak.model.Population;
 
 @Data
-@ThreadLocal
+@Singleton
 @RequiredArgsConstructor
 public class GeneticAlgorithmService {
 

@@ -1,14 +1,20 @@
 package pl.com.seremak.model
 
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
 import pl.com.seremak.model.Population
 import spock.lang.Specification
 
+@MicronautTest
 class PopulationTest extends Specification {
+
+    @Inject
+    Population population
 
     def 'should generate population with correct number of individuals'() {
 
-        when:
-        def population = new Population(individualsNumber as int)
+        when: 'generate population'
+        population.generatePopulation(individualsNumber as int)
 
         then:
         population.getIndividuals().size() == individualsNumber

@@ -1,10 +1,14 @@
 package pl.com.seremak.model
 
 import io.vavr.collection.List
+import jakarta.inject.Inject
 import pl.com.seremak.model.Individual
 import spock.lang.Specification
 
 class IndividualTest extends Specification {
+
+    @Inject
+    Individual individual
 
     def 'should generate Individual'() {
 
