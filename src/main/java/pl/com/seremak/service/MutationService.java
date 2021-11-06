@@ -2,27 +2,27 @@ package pl.com.seremak.service;
 
 import io.vavr.collection.List;
 import jakarta.inject.Singleton;
+import lombok.Data;
 import pl.com.seremak.model.Individual;
+import pl.com.seremak.model.Population;
 
 import java.util.Random;
 
+@Data
 @Singleton
 public class MutationService {
 
-    private List<Individual> populationAfterInterbreeding;
-    private List<Individual> mutatedPopulation;
-    private final double mutationProbability;
     private final Random random;
+    private double mutationProbability;
 
-    public MutationService(final double mutationProbability) {
-        this.mutationProbability = mutationProbability;
+    public MutationService() {
         this.random = new Random();
     }
 
-    public List<Individual> performMutation() {
-        mutatedPopulation = populationAfterInterbreeding
+    public List<Individual> performMutation(final Population population) {
+        return population
+                .getIndividuals()
                 .map(this::mutateIndividual);
-        return mutatedPopulation;
     }
 
     private Individual mutateIndividual(final Individual individual) {

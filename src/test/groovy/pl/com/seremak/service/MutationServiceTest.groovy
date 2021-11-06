@@ -1,28 +1,37 @@
 package pl.com.seremak.service
 
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
 import pl.com.seremak.model.Population
 import spock.lang.Specification
 
+@MicronautTest
 class MutationServiceTest extends Specification {
+
+    @Inject
+    Population population
+
+    @Inject
+    MutationService mutationService
+
 
     def 'should mutate population properly' () {
 
         given: 'creating new population'
-        def populationAfterInterBreeding = new Population(numberOfIndividuals)
+        population.generatePopulation(individualsNumber)
 
+        and: 'define mutation probability'
+        mutationService.setMutationProbability(0.2)
 
-        and: 'creating new mutationService'
-        def mutationService = new MutationService(populationAfterInterBreeding, mutationProbability)
-
-        when: 'perform mutation in population'
-        def populationAfterMutation = mutationService.performMutation()
+        when: 'perform mutation of given population'
+        def mutatedIndividuals = mutationService.performMutation(population)
 
         then: 'should mutate objects properly'
-        populationAfterMutation.length() == numberOfIndividuals
-        populationAfterMutation.get(0).getIndividual().length() == 8
+        mutatedIndividuals.length() == individualsNumber
+        mutatedIndividuals.get(0).getIndividual().length() == 8
 
         where:
-        numberOfIndividuals | mutationProbability
+        individualsNumber | mutationProbability
         1                   | 0.1
         2                   | 0.2
         3                   | 0.15

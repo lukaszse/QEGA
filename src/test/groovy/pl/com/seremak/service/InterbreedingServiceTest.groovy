@@ -17,16 +17,16 @@ class InterbreedingServiceTest extends Specification {
 
     def 'should draw pair of individuals and remove it from list'() {
 
-        given: 'creating new population'
+        given: 'create new population'
         population.generatePopulation(individualsNumber)
 
-        and: 'setting interbreedingProbability'
+        and: 'define interbreedingProbability'
         interbreedingService.setInterbreedingProbability(0.8)
 
         and: 'pass generated population to interbreeding service'
         interbreedingService.setParentPopulation(population.getIndividuals())
 
-        when:
+        when: 'draw individuals pair from population several times'
         def children = Stream.range(0, drawsNumber)
                 .map(i -> interbreedingService.drawIndividualPair())
                 .flatMap(tuple -> List.of(tuple._1(), tuple._2()))
@@ -47,20 +47,20 @@ class InterbreedingServiceTest extends Specification {
     def 'should interbreed pair of individuals correctly'() {
 
         given: 'creating new population'
-        population.generatePopulation(numberOfIndividuals)
+        population.generatePopulation(individualsNumber)
 
-        and:
+        and: 'define interbreeding probability'
         interbreedingService.setInterbreedingProbability(0.8)
 
-        when:
+        when: 'pass population to interbreeding service'
         var children = interbreedingService.performInterbreedingInPopulation(population)
 
         then:
         children.get(0).getIndividual().length() == 8
-        children.length() == numberOfIndividuals
+        children.length() == individualsNumber
 
         where:
-        numberOfIndividuals | interbreedingProbability
+        individualsNumber | interbreedingProbability
         1                   | 0.8
         2                   | 0.9
         3                   | 0.55
