@@ -24,7 +24,7 @@ class MutationServiceTest extends Specification {
         mutationService.setMutationProbability(0.2)
 
         when: 'perform mutation of given population'
-        def mutatedIndividuals = mutationService.performMutation(population)
+        def mutatedIndividuals = mutationService.performMutation(population.getIndividuals())
 
         then: 'should mutate objects properly'
         mutatedIndividuals.length() == individualsNumber

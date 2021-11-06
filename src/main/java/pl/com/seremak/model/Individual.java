@@ -2,24 +2,26 @@ package pl.com.seremak.model;
 
 import io.vavr.collection.List;
 import io.vavr.collection.Stream;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Random;
 
 @Data
+@AllArgsConstructor(staticName = "of")
 public class Individual {
 
     private List<Boolean> individual;
 
-    Individual() {
+    public Individual() {
         this.individual = generateIndividual();
     }
 
-    public Individual(List<Boolean> individual) {
-        this.individual = individual;
+    public int toInt() {
+        return toInt(individual);
     }
 
-    public int toInt() {
+    public int toInt(final List<Boolean> individual) {
         return Stream.range(0, 8)
                 .map(i -> booleanToInt(individual.get(7-i))* (int) Math.pow(2, i))
                 .sum().intValue();

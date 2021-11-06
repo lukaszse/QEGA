@@ -16,6 +16,15 @@ public class QEGACommand implements Runnable {
     @Inject
     GeneticAlgorithmService geneticAlgorithmService;
 
+    @Option(names = {"-a"}, description = "Factor a", defaultValue = "10")
+    int a;
+
+    @Option(names = {"-b"}, description = "Factor b", defaultValue = "10")
+    int b;
+
+    @Option(names = {"-c"}, description = "Factor c", defaultValue = "10")
+    int c;
+
     @Option(names = {"-r", "--runs"}, description = "Number of program runs", defaultValue = "40")
     int runsNumber;
 
@@ -25,7 +34,7 @@ public class QEGACommand implements Runnable {
     @Option(names = {"-i", "--individuals"}, description = "Number of individuals in population (population size)", defaultValue = "10")
     int individualsNumber;
 
-    @Option(names = {"-b", "--interbreeding"}, description = "Interbreeding probability of individuals", defaultValue = "0.75")
+    @Option(names = {"-t", "--interbreeding"}, description = "Interbreeding probability of individuals", defaultValue = "0.75")
     double interbreedingProbability;
 
     @Option(names = {"-m", "--mutation"}, description = "Mutation probability of individuals", defaultValue = "0.05")
@@ -39,8 +48,11 @@ public class QEGACommand implements Runnable {
 
         log.info("QEGA application started");
 
-        geneticAlgorithmService.setInputParameters(
+        geneticAlgorithmService.setParam(
                 InputParameters.builder()
+                        .a(a)
+                        .b(b)
+                        .c(c)
                         .runsNumber(runsNumber)
                         .populationsNumber(populationsNumber)
                         .individualsNumber(individualsNumber)

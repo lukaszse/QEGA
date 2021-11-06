@@ -7,6 +7,9 @@ import lombok.Data;
 @Builder
 public class InputParameters {
 
+    private final int a;
+    private final int b;
+    private final int c;
     private final int runsNumber;
     private final int populationsNumber;
     private final int individualsNumber;

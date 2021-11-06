@@ -25,7 +25,7 @@ public class MutationService {
     }
 
     private Individual mutateIndividual(final Individual individual) {
-        return new Individual(individual.getIndividual()
+        return Individual.of(individual.getIndividual()
                 .map(gene -> drawToMutation() != gene));
     }
 

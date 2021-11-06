@@ -51,7 +51,7 @@ public class InterbreedingService {
                 .appendAll(individualPair._2.getIndividual().takeRight(8 - drawCuttingPoint));
         final List<Boolean> child2 = individualPair._2.getIndividual().take(drawCuttingPoint)
                 .appendAll(individualPair._1.getIndividual().takeRight(8 - drawCuttingPoint));
-        return Tuple.of(new Individual(child1), new Individual(child2));
+        return Tuple.of(Individual.of(child1), Individual.of(child2));
     }
 
     private Individual getAndRemove(final int index) {
