@@ -55,7 +55,7 @@ public class SelectionService {
                 .prepend(0d)
                 .append(1d)
                 .collect(List.collector());
-        return Stream.range(0, probabilityIntervalList.length())
+        return Stream.range(0, probabilityIntervalList.length()-1)
                 .map(i -> ProbabilityInterval.of(probabilityIntervalList.get(i), probabilityIntervalList.get(i + 1)))
                 .collect(List.collector());
     }

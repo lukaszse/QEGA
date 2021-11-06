@@ -5,6 +5,7 @@ import io.vavr.collection.List
 import jakarta.inject.Inject
 import pl.com.seremak.model.Individual
 import pl.com.seremak.model.InputParameters
+import pl.com.seremak.model.ProbabilityInterval
 import spock.lang.Specification
 
 @MicronautTest
@@ -64,5 +65,28 @@ class SelectionServiceTest extends Specification {
         def individual3 = Individual.of(List.of(false, false, false, false, false, false, true, true))
         def individual4 = Individual.of(List.of(false, true, false, false, false, false, true, true))
         return List.of(individual1, individual2, individual3, individual4)
+    }
+
+    def 'should create List of ProbabilityIntervals for population' () {
+
+        given: 'prepare individuals'
+        def population = preparePopulation()
+
+        and: 'set input quadratic function factors'
+        selectionService.setQuadraticEquationFactors(a, b, c)
+        when:
+        def probabilityIntervals = selectionService.calculateProbabilityIntervals(population)
+
+        then:
+        probabilityIntervals instanceof List<ProbabilityInterval>
+        def interval = probabilityIntervals.get()
+        interval instanceof ProbabilityInterval
+
+        where:
+        a | b | c
+        2 | 2 | 2
+        3 | 1 | 0
+        2 | 0 | 0
+        0 | 0 | 0
     }
 }
