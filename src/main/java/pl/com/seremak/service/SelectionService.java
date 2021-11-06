@@ -3,10 +3,9 @@ package pl.com.seremak.service;
 import io.vavr.collection.List;
 import io.vavr.collection.Stream;
 import jakarta.inject.Singleton;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import pl.com.seremak.model.Individual;
 import pl.com.seremak.model.ProbabilityInterval;
+import pl.com.seremak.service.Util.QuadraticEquation;
 
 import java.util.Random;
 
@@ -30,13 +29,10 @@ public class SelectionService {
         this.c = c;
     }
 
-    public double calculateFunctionValueSum(final List<Individual> population) {
-        return population
-                .map(Individual::toInt)
-                .map(individualValue ->
-                        QuadraticEquation.calculateValue(individualValue, a, b, c))
-                .sum()
-                .doubleValue();
+    private List<Individual> selectNewPopulation(final List<Individual> population, final int individualsNumber) {
+        return Stream.range(0, individualsNumber)
+                .map(i -> drawWithRouletteWheel(population))
+                .collect(List.collector());
     }
 
     private Individual drawWithRouletteWheel(final List<Individual> population) {
@@ -53,18 +49,40 @@ public class SelectionService {
         final List<Double> probabilityIntervalList = population
                 .map(individual -> individualSelectionProbability(population, individual))
                 .prepend(0d)
-                .append(1d)
                 .collect(List.collector());
         return Stream.range(0, probabilityIntervalList.length()-1)
-                .map(i -> ProbabilityInterval.of(probabilityIntervalList.get(i), probabilityIntervalList.get(i + 1)))
+                .map(i -> mapToProbabilityInterval(probabilityIntervalList, i))
                 .collect(List.collector());
     }
 
-    private double individualSelectionProbability(final List<Individual> population, final Individual individual) {
+    private ProbabilityInterval mapToProbabilityInterval(final List<Double> probabilityList, final int index) {
+        var cumulativeValueFrom = calculateCumulativeValue(probabilityList, index);
+        var cumulativeValueTo = calculateCumulativeValue(probabilityList, index+1);
+        return ProbabilityInterval.of(cumulativeValueFrom, cumulativeValueTo);
+    }
+
+    private Double calculateCumulativeValue(final List<Double> probabilityList, final int index) {
+        return Stream.rangeClosed(0, index)
+                .map(probabilityList::get)
+                .sum()
+                .doubleValue();
+    }
+
+
+    public double individualSelectionProbability(final List<Individual> population, final Individual individual) {
         var functionSumValue = calculateFunctionValueSum(population);
         var individualValue = QuadraticEquation.calculateValue(individual.toInt(), a, b, c);
         return functionSumValue != 0 || individualValue != 0 ?
                 individualValue / calculateFunctionValueSum(population) :
                 0;
+    }
+
+    public double calculateFunctionValueSum(final List<Individual> population) {
+        return population
+                .map(Individual::toInt)
+                .map(individualValue ->
+                        QuadraticEquation.calculateValue(individualValue, a, b, c))
+                .sum()
+                .doubleValue();
     }
 }

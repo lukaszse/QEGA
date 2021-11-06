@@ -58,15 +58,6 @@ class SelectionServiceTest extends Specification {
         0 | 0 | 0 | 0
     }
 
-
-    static def preparePopulation() {
-        def individual1 = Individual.of(List.of(false, false, false, false, false, false, false, true))
-        def individual2 = Individual.of(List.of(false, false, false, false, false, false, true, false))
-        def individual3 = Individual.of(List.of(false, false, false, false, false, false, true, true))
-        def individual4 = Individual.of(List.of(false, true, false, false, false, false, true, true))
-        return List.of(individual1, individual2, individual3, individual4)
-    }
-
     def 'should create List of ProbabilityIntervals for population' () {
 
         given: 'prepare individuals'
@@ -88,5 +79,37 @@ class SelectionServiceTest extends Specification {
         3 | 1 | 0
         2 | 0 | 0
         0 | 0 | 0
+    }
+
+    def 'should select new better population' () {
+
+        given: 'prepare individuals'
+        def population = preparePopulation()
+
+        and: 'set input quadratic function factors'
+        selectionService.setQuadraticEquationFactors(a, b, c)
+
+        when:
+        def newGeneration = selectionService.selectNewPopulation(population, individualsNumber)
+
+        then:
+        newGeneration instanceof List<Individual>
+        newGeneration.length() == individualsNumber
+        newGeneration.get().getIndividual().length() == 8
+
+        where:
+        a | b | c | individualsNumber
+        2 | 2 | 2 | 345
+        3 | 1 | 0 | 43
+        2 | 0 | 0 | 24
+        0 | 2 | 0 | 6
+    }
+
+    static def preparePopulation() {
+        def individual1 = Individual.of(List.of(false, false, false, false, false, false, false, true))
+        def individual2 = Individual.of(List.of(false, false, false, false, false, false, true, false))
+        def individual67 = Individual.of(List.of(false, true, false, false, false, false, true, true))
+        def individual3 = Individual.of(List.of(false, false, false, false, false, false, true, true))
+        return List.of(individual1, individual2, individual67, individual3)
     }
 }
