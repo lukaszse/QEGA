@@ -1,33 +1,38 @@
 package pl.com.seremak.service;
 
+import io.micronaut.runtime.context.scope.ThreadLocal;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.collection.List;
+import jakarta.inject.Singleton;
+import lombok.Data;
 import pl.com.seremak.model.Individual;
 import pl.com.seremak.model.Population;
 
 import java.util.Random;
 
+
+@Data
+@Singleton
 public class InterbreedingService {
 
-    private List<Individual> parentPopulation;
-    private List<Individual> childPopulation;
-    private final double interbreedingProbability;
     private final Random random;
+    private double interbreedingProbability;
+    private List<Individual> parentPopulation;
 
-    InterbreedingService(final Population parentPopulation, final double interbreedingProbability) {
-        this.parentPopulation = List.ofAll(parentPopulation.getIndividuals());
-        this.interbreedingProbability = interbreedingProbability;
-        this.childPopulation = List.empty();
+    InterbreedingService() {
         this.random = new Random();
     }
 
-    public List<Individual> performInterbreedingInPopulation() {
+    public List<Individual> performInterbreedingInPopulation(final Population population) {
+        parentPopulation = List.ofAll(population.getIndividuals());
+        List<Individual> childPopulation = List.empty();
+
         while (parentPopulation.length() > 1) {
             var interbreedingResult = interbreedPairOrCopyParents(drawIndividualPair());
             childPopulation = childPopulation.appendAll(interbreedingResult.apply(List::of));
         }
-        return childPopulation = childPopulation.appendAll(parentPopulation);
+        return childPopulation.appendAll(parentPopulation);
     }
 
     private Tuple2<Individual, Individual> interbreedPairOrCopyParents(final Tuple2<Individual, Individual> drawnPair) {
@@ -64,6 +69,6 @@ public class InterbreedingService {
     }
 
     private int drawIndex() {
-        return random.nextInt(parentPopulation.size());
+        return random.nextInt(parentPopulation.length());
     }
 }

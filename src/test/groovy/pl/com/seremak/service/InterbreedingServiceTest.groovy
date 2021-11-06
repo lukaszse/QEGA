@@ -1,50 +1,59 @@
 package pl.com.seremak.service
 
-import io.vavr.Tuple2
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import io.vavr.collection.Stream
-import pl.com.seremak.model.Individual
+import jakarta.inject.Inject
 import pl.com.seremak.model.Population
 import spock.lang.Specification
 
+@MicronautTest
 class InterbreedingServiceTest extends Specification {
+
+    @Inject
+    Population population
+
+    @Inject
+    InterbreedingService interbreedingService
 
     def 'should draw pair of individuals and remove it from list'() {
 
         given: 'creating new population'
-        def population = new Population(individualsNumber)
+        population.generatePopulation(individualsNumber)
 
         and: 'setting interbreedingProbability'
-        def interbreedingProbability = 0.8
+        interbreedingService.setInterbreedingProbability(0.8)
 
-        and: 'creating new InterbreedingService with previously created population as a parameter'
-        InterbreedingService interbreedingService = new InterbreedingService(population, interbreedingProbability)
+        and: 'pass generated population to interbreeding service'
+        interbreedingService.setParentPopulation(population.getIndividuals())
 
         when:
-        Stream.range(0, drawsNumber)
-                .forEach(i -> interbreedingService.drawIndividualPair())
+        def children = Stream.range(0, drawsNumber)
+                .map(i -> interbreedingService.drawIndividualPair())
+                .flatMap(tuple -> List.of(tuple._1(), tuple._2()))
+                .collect(list -> List.collect())
 
         then:
-        interbreedingService.parentPopulation.length() == expectedPopulationSize
+        children.size() == expecteChildenSize
+        interbreedingService.getParentPopulation().size() == expectedParentSize
 
         where:
-        individualsNumber | drawsNumber | expectedPopulationSize
-        5                 | 2           | 1
-        8                 | 3           | 2
-        3                 | 1           | 1
-        2                 | 1           | 0
-
+        individualsNumber | drawsNumber | expectedParentSize | expecteChildenSize
+        5                 | 2           | 1                  | 4
+        8                 | 3           | 2                  | 6
+        3                 | 1           | 1                  | 2
+        2                 | 1           | 0                  | 2
     }
 
     def 'should interbreed pair of individuals correctly'() {
 
         given: 'creating new population'
-        def population = new Population(numberOfIndividuals)
+        population.generatePopulation(numberOfIndividuals)
 
-        and: 'creating new InterbreedingService with previously created population as a parameter'
-        InterbreedingService interbreedingService = new InterbreedingService(population, interbreedingProbability)
+        and:
+        interbreedingService.setInterbreedingProbability(0.8)
 
         when:
-        var children = interbreedingService.performInterbreedingInPopulation()
+        var children = interbreedingService.performInterbreedingInPopulation(population)
 
         then:
         children.get(0).getIndividual().length() == 8

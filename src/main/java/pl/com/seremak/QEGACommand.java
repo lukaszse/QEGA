@@ -1,15 +1,20 @@
 package pl.com.seremak;
 
 import io.micronaut.configuration.picocli.PicocliRunner;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import pl.com.seremak.model.InputParameters;
+import pl.com.seremak.service.GeneticAlgorithmService;
 
 @Slf4j
 @Command(name = "QEGA", description = "This is application for finding minimum of quadratic function with use of genetic algorithm",
         mixinStandardHelpOptions = true)
 public class QEGACommand implements Runnable {
 
+    @Inject
+    GeneticAlgorithmService geneticAlgorithmService;
 
     @Option(names = {"-r", "--runs"}, description = "Number of program runs", defaultValue = "40")
     int runsNumber;
@@ -31,12 +36,22 @@ public class QEGACommand implements Runnable {
     }
 
     public void run() {
+
         log.info("QEGA application started");
-        validateInput(populationsNumber, individualsNumber);
+
+        geneticAlgorithmService.setInputParameters(
+                InputParameters.builder()
+                        .runsNumber(runsNumber)
+                        .populationsNumber(populationsNumber)
+                        .individualsNumber(individualsNumber)
+                        .interbreedingProbability(interbreedingProbability)
+                        .mutationProbability(mutationProbability)
+                        .build());
+
     }
 
     private static void validateInput(final int populationsNumber, final int individualsNumber) {
-        if(populationsNumber * individualsNumber >= 150) {
+        if (populationsNumber * individualsNumber >= 150) {
             throw new IllegalArgumentException("populationsNumber * individualsNumber cannot exceed 150");
         }
     }

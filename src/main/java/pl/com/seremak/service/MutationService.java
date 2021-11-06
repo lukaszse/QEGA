@@ -1,22 +1,21 @@
 package pl.com.seremak.service;
 
 import io.vavr.collection.List;
+import jakarta.inject.Singleton;
 import pl.com.seremak.model.Individual;
-import pl.com.seremak.model.Population;
 
 import java.util.Random;
 
+@Singleton
 public class MutationService {
 
-    private final List<Individual> populationAfterInterbreeding;
+    private List<Individual> populationAfterInterbreeding;
     private List<Individual> mutatedPopulation;
     private final double mutationProbability;
     private final Random random;
 
-    public MutationService(final Population populationAfterInterbreeding, final double mutationProbability) {
-        this.populationAfterInterbreeding = List.ofAll(populationAfterInterbreeding.getIndividuals());
+    public MutationService(final double mutationProbability) {
         this.mutationProbability = mutationProbability;
-        this.mutatedPopulation = List.empty();
         this.random = new Random();
     }
 
@@ -34,6 +33,4 @@ public class MutationService {
     private boolean drawToMutation() {
         return random.nextFloat() <= mutationProbability;
     }
-
-
 }
