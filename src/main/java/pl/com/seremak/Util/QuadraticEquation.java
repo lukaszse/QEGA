@@ -1,4 +1,4 @@
-package pl.com.seremak.service.Util;
+package pl.com.seremak.Util;
 
 public class QuadraticEquation {
 

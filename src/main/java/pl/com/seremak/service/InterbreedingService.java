@@ -27,7 +27,6 @@ public class InterbreedingService {
     public List<Individual> performInterbreedingInPopulation(final Population population) {
         parentPopulation = List.ofAll(population.getIndividuals());
         List<Individual> childPopulation = List.empty();
-
         while (parentPopulation.length() > 1) {
             var interbreedingResult = interbreedPairOrCopyParents(drawIndividualPair());
             childPopulation = childPopulation.appendAll(interbreedingResult.apply(List::of));

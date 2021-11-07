@@ -48,7 +48,7 @@ public class QEGACommand implements Runnable {
 
         log.info("QEGA application started");
 
-        geneticAlgorithmService.setParam(
+        geneticAlgorithmService.setParams(
                 InputParameters.builder()
                         .a(a)
                         .b(b)

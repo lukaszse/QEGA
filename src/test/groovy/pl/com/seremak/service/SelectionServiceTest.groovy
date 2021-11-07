@@ -4,7 +4,6 @@ import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import io.vavr.collection.List
 import jakarta.inject.Inject
 import pl.com.seremak.model.Individual
-import pl.com.seremak.model.InputParameters
 import pl.com.seremak.model.ProbabilityInterval
 import spock.lang.Specification
 
@@ -20,7 +19,7 @@ class SelectionServiceTest extends Specification {
         def population = preparePopulation()
 
         and: 'set input quadratic function factors'
-        selectionService.setQuadraticEquationFactors(a, b, c)
+        selectionService.setParameters(a, b, c, 1)
 
         when: 'calculate sum'
         def sum = selectionService.calculateFunctionValueSum(population)
@@ -42,7 +41,7 @@ class SelectionServiceTest extends Specification {
         def population = preparePopulation()
 
         and: 'set input quadratic function factors'
-        selectionService.setQuadraticEquationFactors(a, b, c)
+        selectionService.setParameters(a, b, c, 1)
 
         when: 'calculate individual selection probability'
         def probability = selectionService.individualSelectionProbability(population, population.get(1))
@@ -64,7 +63,7 @@ class SelectionServiceTest extends Specification {
         def population = preparePopulation()
 
         and: 'set input quadratic function factors'
-        selectionService.setQuadraticEquationFactors(a, b, c)
+        selectionService.setParameters(a, b, c, 1)
         when:
         def probabilityIntervals = selectionService.calculateProbabilityIntervals(population)
 
@@ -87,10 +86,10 @@ class SelectionServiceTest extends Specification {
         def population = preparePopulation()
 
         and: 'set input quadratic function factors'
-        selectionService.setQuadraticEquationFactors(a, b, c)
+        selectionService.setParameters(a, b, c, individualsNumber)
 
         when:
-        def newGeneration = selectionService.selectNewPopulation(population, individualsNumber)
+        def newGeneration = selectionService.selectNewPopulation(population)
 
         then:
         newGeneration instanceof List<Individual>

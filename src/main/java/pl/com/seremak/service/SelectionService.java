@@ -5,7 +5,7 @@ import io.vavr.collection.Stream;
 import jakarta.inject.Singleton;
 import pl.com.seremak.model.Individual;
 import pl.com.seremak.model.ProbabilityInterval;
-import pl.com.seremak.service.Util.QuadraticEquation;
+import pl.com.seremak.Util.QuadraticEquation;
 
 import java.util.Random;
 
@@ -17,19 +17,21 @@ public class SelectionService {
     private int a;
     private int b;
     private int c;
+    private int individualsNumber;
 
 
     SelectionService() {
         this.random = new Random();
     }
 
-    public void setQuadraticEquationFactors(final int a, final int b, final int c) {
+    public void setParameters(final int a, final int b, final int c, final int individualsNumber) {
         this.a = a;
         this.b = b;
         this.c = c;
+        this.individualsNumber = individualsNumber;
     }
 
-    private List<Individual> selectNewPopulation(final List<Individual> population, final int individualsNumber) {
+    public List<Individual> selectNewPopulation(final List<Individual> population) {
         return Stream.range(0, individualsNumber)
                 .map(i -> drawWithRouletteWheel(population))
                 .collect(List.collector());
@@ -69,7 +71,7 @@ public class SelectionService {
     }
 
 
-    public double individualSelectionProbability(final List<Individual> population, final Individual individual) {
+    private double individualSelectionProbability(final List<Individual> population, final Individual individual) {
         var functionSumValue = calculateFunctionValueSum(population);
         var individualValue = QuadraticEquation.calculateValue(individual.toInt(), a, b, c);
         return functionSumValue != 0 || individualValue != 0 ?
@@ -77,7 +79,7 @@ public class SelectionService {
                 0;
     }
 
-    public double calculateFunctionValueSum(final List<Individual> population) {
+    private double calculateFunctionValueSum(final List<Individual> population) {
         return population
                 .map(Individual::toInt)
                 .map(individualValue ->
