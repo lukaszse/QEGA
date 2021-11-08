@@ -31,7 +31,7 @@ public class GeneticAlgorithmService {
     private List<String> results;
 
     public final void run() {
-        setParams(params);
+        setParameters(params);
         population.generatePopulation(params.getIndividualsNumber());
         writer = new ResultFileWriter();
 
