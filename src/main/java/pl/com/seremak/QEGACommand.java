@@ -16,13 +16,13 @@ public class QEGACommand implements Runnable {
     @Inject
     GeneticAlgorithmService geneticAlgorithmService;
 
-    @Option(names = {"-a"}, description = "Factor a", defaultValue = "10")
+    @Option(names = {"-a"}, description = "Factor a", defaultValue = "-1")
     int a;
 
-    @Option(names = {"-b"}, description = "Factor b", defaultValue = "10")
+    @Option(names = {"-b"}, description = "Factor b", defaultValue = "0")
     int b;
 
-    @Option(names = {"-c"}, description = "Factor c", defaultValue = "10")
+    @Option(names = {"-c"}, description = "Factor c", defaultValue = "100")
     int c;
 
     @Option(names = {"-r", "--runs"}, description = "Number of program runs", defaultValue = "40")

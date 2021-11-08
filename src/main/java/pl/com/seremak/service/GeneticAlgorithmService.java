@@ -70,7 +70,8 @@ public class GeneticAlgorithmService {
 
     private String createResultString(final int x) {
         return Stream.of(QuadraticEquation.calculateValue(x, params.getA(), params.getB(), params.getC()))
-                .map(y -> "f(%d) %f".formatted(x, y))
+                .map(Double::intValue)
+                .map(y -> "f(%d) %d".formatted(x, y))
                 .get();
     }
 }

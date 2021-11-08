@@ -32,13 +32,17 @@ public class SelectionService {
     }
 
     public List<Individual> selectNewPopulation(final List<Individual> population) {
+        var probabilityIntervals = calculateProbabilityIntervals(population);
         return Stream.range(0, individualsNumber)
-                .map(i -> drawWithRouletteWheel(population))
+                .map(i -> drawWithRouletteWheel(population, probabilityIntervals))
                 .collect(List.collector());
     }
 
-    private Individual drawWithRouletteWheel(final List<Individual> population) {
-        return population.get(drawIndexWithRouletteWheel(calculateProbabilityIntervals(population)));
+    private Individual drawWithRouletteWheel(final List<Individual> population, List<ProbabilityInterval> probabilityIntervals) {
+        return Stream.of(probabilityIntervals)
+                .map(theProbabilityIntervals -> drawIndexWithRouletteWheel(probabilityIntervals))
+                .map(population::get)
+                .get();
     }
 
     private int drawIndexWithRouletteWheel(final List<ProbabilityInterval> probabilityIntervals) {
@@ -75,7 +79,7 @@ public class SelectionService {
         var functionSumValue = calculateFunctionValueSum(population);
         var individualValue = QuadraticEquation.calculateValue(individual.toInt(), a, b, c);
         return functionSumValue != 0 || individualValue != 0 ?
-                individualValue / calculateFunctionValueSum(population) :
+                individualValue / functionSumValue :
                 0;
     }
 
