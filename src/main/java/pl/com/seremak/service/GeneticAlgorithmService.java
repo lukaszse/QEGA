@@ -8,19 +8,16 @@ import jakarta.inject.Singleton;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import pl.com.seremak.Util.QuadraticEquation;
 import pl.com.seremak.Util.ResultFileWriter;
 import pl.com.seremak.model.InputParameters;
 import pl.com.seremak.model.Population;
-import pl.com.seremak.Util.QuadraticEquation;
-
-import java.io.FileWriter;
 
 @Slf4j
 @Data
 @Singleton
 @RequiredArgsConstructor
 public class GeneticAlgorithmService {
-
 
     private final MutationService mutationService;
     private final InterbreedingService interbreedingService;
