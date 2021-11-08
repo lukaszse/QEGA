@@ -19,7 +19,7 @@ public class ResultFileWriter {
     private static final String FILE_NAME_PATTERN = "SGA_result_%s.txt";
     private final Path fileName;
 
-    ResultFileWriter() {
+    public ResultFileWriter() {
         this.fileName = createFileName();
     }
 

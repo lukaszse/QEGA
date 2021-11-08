@@ -7,11 +7,15 @@ import io.vavr.control.Option;
 import jakarta.inject.Singleton;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import pl.com.seremak.Util.ResultFileWriter;
 import pl.com.seremak.model.InputParameters;
 import pl.com.seremak.model.Population;
 import pl.com.seremak.Util.QuadraticEquation;
 
+import java.io.FileWriter;
+
+@Slf4j
 @Data
 @Singleton
 @RequiredArgsConstructor
@@ -29,15 +33,23 @@ public class GeneticAlgorithmService {
     public final void run() {
         setParams(params);
         population.generatePopulation(params.getIndividualsNumber());
+        writer = new ResultFileWriter();
+
+        var results = Stream.rangeClosed(0, params.getRunsNumber())
+                .map(i -> singleRun())
+                .map(this::createResultString)
+                .peek(log::info)
+                .toList();
+
+        writer.writeResult(results);
     }
 
-    private String singleRun() {
+    private int singleRun() {
         return Stream.rangeClosed(0, params.getPopulationsNumber())
                 .map(i -> createNextGeneration())
                 .map(Population::toIntegerList)
                 .map(Traversable::max)
                 .map(Option::get)
-                .map(this::createResultString)
                 .get();
     }
 

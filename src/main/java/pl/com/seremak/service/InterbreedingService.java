@@ -10,6 +10,8 @@ import pl.com.seremak.model.Individual;
 import pl.com.seremak.model.Population;
 
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Data
@@ -28,8 +30,12 @@ public class InterbreedingService {
         parentPopulation = List.ofAll(population.getIndividuals());
         List<Individual> childPopulation = List.empty();
         while (parentPopulation.length() > 1) {
-            var interbreedingResult = interbreedPairOrCopyParents(drawIndividualPair());
-            childPopulation = childPopulation.appendAll(interbreedingResult.apply(List::of));
+            var interbreedingResult =
+                    Stream.of(drawIndividualPair())
+                            .map(this::interbreedPairOrCopyParents)
+                            .flatMap(result -> result.apply(Stream::of))
+                            .collect(Collectors.toList());
+            childPopulation = childPopulation.appendAll(interbreedingResult);
         }
         return childPopulation.appendAll(parentPopulation);
     }
