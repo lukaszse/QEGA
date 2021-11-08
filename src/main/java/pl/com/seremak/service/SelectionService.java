@@ -2,8 +2,10 @@ package pl.com.seremak.service;
 
 import io.vavr.collection.List;
 import io.vavr.collection.Stream;
+import io.vavr.collection.Traversable;
 import jakarta.inject.Singleton;
 import pl.com.seremak.model.Individual;
+import pl.com.seremak.model.Population;
 import pl.com.seremak.model.ProbabilityInterval;
 import pl.com.seremak.Util.QuadraticEquation;
 
@@ -56,14 +58,14 @@ public class SelectionService {
                 .map(individual -> individualSelectionProbability(population, individual))
                 .prepend(0d)
                 .collect(List.collector());
-        return Stream.range(0, probabilityIntervalList.length()-1)
+        return Stream.range(0, probabilityIntervalList.length() - 1)
                 .map(i -> mapToProbabilityInterval(probabilityIntervalList, i))
                 .collect(List.collector());
     }
 
     private ProbabilityInterval mapToProbabilityInterval(final List<Double> probabilityList, final int index) {
         var cumulativeValueFrom = calculateCumulativeValue(probabilityList, index);
-        var cumulativeValueTo = calculateCumulativeValue(probabilityList, index+1);
+        var cumulativeValueTo = calculateCumulativeValue(probabilityList, index + 1);
         return ProbabilityInterval.of(cumulativeValueFrom, cumulativeValueTo);
     }
 
@@ -74,21 +76,30 @@ public class SelectionService {
                 .doubleValue();
     }
 
-
     private double individualSelectionProbability(final List<Individual> population, final Individual individual) {
-        var functionSumValue = calculateFunctionValueSum(population);
-        var individualValue = QuadraticEquation.calculateValue(individual.toInt(), a, b, c);
+        var offset = calculateOffset(population);
+        var functionSumValue = calculateFunctionValueSum(population, offset);
+        var individualValue = QuadraticEquation.calculateValue(individual.toInt(), a, b, c) + offset;
         return functionSumValue != 0 || individualValue != 0 ?
                 individualValue / functionSumValue :
                 0;
     }
 
-    private double calculateFunctionValueSum(final List<Individual> population) {
+    private double calculateFunctionValueSum(final List<Individual> population, final double offset) {
         return population
                 .map(Individual::toInt)
-                .map(individualValue ->
-                        QuadraticEquation.calculateValue(individualValue, a, b, c))
+                .map(x -> QuadraticEquation.calculateValue(x, a, b, c))
+                .map(f_x -> f_x + offset)
                 .sum()
                 .doubleValue();
+    }
+
+    private double calculateOffset(final List<Individual> population) {
+        return population
+                .map(Individual::toInt)
+                .map(x -> QuadraticEquation.calculateValue(x, a, b, c))
+                .min()
+                .map(lowestIndividual -> lowestIndividual < 0 ? Math.abs(lowestIndividual) : 0)
+                .get();
     }
 }

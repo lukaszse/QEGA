@@ -29,6 +29,7 @@ public class InterbreedingService {
     public List<Individual> performInterbreedingInPopulation(final Population population) {
         parentPopulation = List.ofAll(population.getIndividuals());
         List<Individual> childPopulation = List.empty();
+
         while (parentPopulation.length() > 1) {
             var interbreedingResult =
                     Stream.of(drawIndividualPair())

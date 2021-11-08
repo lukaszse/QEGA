@@ -47,7 +47,9 @@ public class QEGACommand implements Runnable {
     public void run() {
 
         log.info("QEGA application started");
+        log.info("Looking for maximum function: %d*x^2 + %d*x + %d".formatted(a, b, c));
 
+        validateInput(populationsNumber, individualsNumber);
         geneticAlgorithmService.setParams(
                 InputParameters.builder()
                         .a(a)

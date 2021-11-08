@@ -22,7 +22,7 @@ class SelectionServiceTest extends Specification {
         selectionService.setParameters(a, b, c, 1)
 
         when: 'calculate sum'
-        def sum = selectionService.calculateFunctionValueSum(population)
+        def sum = selectionService.calculateFunctionValueSum(population, 0)
 
         then:
         sum == expectedResult

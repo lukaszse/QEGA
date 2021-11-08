@@ -23,6 +23,10 @@ public class Population {
     }
 
     public List<Integer> toIntegerList() {
+        return toIntegerList(individuals);
+    }
+
+    public static List<Integer> toIntegerList(final List<Individual> individuals) {
         return individuals
                 .map(Individual::toInt);
     }

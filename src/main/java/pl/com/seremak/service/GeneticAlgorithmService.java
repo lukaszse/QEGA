@@ -32,10 +32,10 @@ public class GeneticAlgorithmService {
 
     public final void run() {
         setParameters(params);
-        population.generatePopulation(params.getIndividualsNumber());
         writer = new ResultFileWriter();
+        population.generatePopulation(params.getIndividualsNumber());
 
-        var results = Stream.rangeClosed(0, params.getRunsNumber())
+        var results = Stream.rangeClosed(1, params.getRunsNumber())
                 .map(i -> singleRun())
                 .map(this::createResultString)
                 .peek(log::info)
@@ -45,7 +45,7 @@ public class GeneticAlgorithmService {
     }
 
     private int singleRun() {
-        return Stream.rangeClosed(0, params.getPopulationsNumber())
+        return Stream.rangeClosed(1, params.getPopulationsNumber())
                 .map(i -> createNextGeneration())
                 .map(Population::toIntegerList)
                 .map(Traversable::max)
