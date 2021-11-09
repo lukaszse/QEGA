@@ -9,7 +9,7 @@ import pl.com.seremak.model.InputParameters;
 import pl.com.seremak.service.GeneticAlgorithmService;
 
 @Slf4j
-@Command(name = "QEGA", description = "This is application for finding minimum of quadratic function with use of genetic algorithm",
+@Command(name = "QEGA", description = "This is application for finding maksimum of quadratic function with use of genetic algorithm",
         mixinStandardHelpOptions = true)
 public class QEGACommand implements Runnable {
 
@@ -34,10 +34,10 @@ public class QEGACommand implements Runnable {
     @Option(names = {"-i", "--individuals"}, description = "Number of individuals in population (population size)", defaultValue = "10")
     int individualsNumber;
 
-    @Option(names = {"-t", "--interbreeding"}, description = "Interbreeding probability of individuals", defaultValue = "0.75")
+    @Option(names = {"-t", "--interbreeding"}, description = "Interbreeding probability of individuals", defaultValue = "0.7")
     double interbreedingProbability;
 
-    @Option(names = {"-m", "--mutation"}, description = "Mutation probability of individuals", defaultValue = "0.05")
+    @Option(names = {"-m", "--mutation"}, description = "Mutation probability of individuals", defaultValue = "0.15")
     double mutationProbability;
 
     public static void main(String[] args) throws Exception {
@@ -47,7 +47,10 @@ public class QEGACommand implements Runnable {
     public void run() {
 
         log.info("QEGA application started");
-        log.info("Looking for maximum function: %d*x^2 + %d*x + %d".formatted(a, b, c));
+        log.info("Input parameters: number of runs = {}, number of population = {}, number of individuals = {}", runsNumber, populationsNumber, individualsNumber);
+        log.info("interbreeding probability = {}, mutation probability {}", interbreedingProbability, mutationProbability);
+
+        log.info("Looking for maximum of function: %d*x^2 + %d*x + %d".formatted(a, b, c));
 
         validateInput(populationsNumber, individualsNumber);
         geneticAlgorithmService.setParams(
@@ -66,7 +69,7 @@ public class QEGACommand implements Runnable {
     }
 
     private static void validateInput(final int populationsNumber, final int individualsNumber) {
-        if (populationsNumber * individualsNumber >= 150) {
+        if (populationsNumber * individualsNumber > 150) {
             throw new IllegalArgumentException("populationsNumber * individualsNumber cannot exceed 150");
         }
     }

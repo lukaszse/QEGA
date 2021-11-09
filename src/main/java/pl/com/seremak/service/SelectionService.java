@@ -34,7 +34,8 @@ public class SelectionService {
     }
 
     public List<Individual> selectNewPopulation(final List<Individual> population) {
-        var probabilityIntervals = calculateProbabilityIntervals(population);
+        var integerPopulation = Population.toIntegerList(population);
+        var probabilityIntervals = calculateProbabilityIntervals(integerPopulation);
         return Stream.range(0, individualsNumber)
                 .map(i -> drawWithRouletteWheel(population, probabilityIntervals))
                 .collect(List.collector());
@@ -53,12 +54,11 @@ public class SelectionService {
                 probabilityInterval.getFrom() < drawnNumber && drawnNumber < probabilityInterval.getTo());
     }
 
-    private List<ProbabilityInterval> calculateProbabilityIntervals(final List<Individual> population) {
+    private List<ProbabilityInterval> calculateProbabilityIntervals(final List<Integer> population) {
         final List<Double> probabilityIntervalList = population
                 .map(individual -> individualSelectionProbability(population, individual))
-                .prepend(0d)
                 .collect(List.collector());
-        return Stream.range(0, probabilityIntervalList.length() - 1)
+        return Stream.range(0, probabilityIntervalList.length())
                 .map(i -> mapToProbabilityInterval(probabilityIntervalList, i))
                 .collect(List.collector());
     }
@@ -70,33 +70,31 @@ public class SelectionService {
     }
 
     private Double calculateCumulativeValue(final List<Double> probabilityList, final int index) {
-        return Stream.rangeClosed(0, index)
+        return Stream.range(0, index)
                 .map(probabilityList::get)
                 .sum()
                 .doubleValue();
     }
 
-    private double individualSelectionProbability(final List<Individual> population, final Individual individual) {
+    private double individualSelectionProbability(final List<Integer> population, final int x) {
         var offset = calculateOffset(population);
-        var functionSumValue = calculateFunctionValueSum(population, offset);
-        var individualValue = QuadraticEquation.calculateValue(individual.toInt(), a, b, c) + offset;
-        return functionSumValue != 0 || individualValue != 0 ?
-                individualValue / functionSumValue :
+        var f_x_sum = calculateFunctionValueSum(population, offset);
+        var f_x = QuadraticEquation.calculateValue(x, a, b, c) + offset;
+        return f_x_sum != 0 || f_x != 0 ?
+                f_x / f_x_sum :
                 0;
     }
 
-    private double calculateFunctionValueSum(final List<Individual> population, final double offset) {
+    private double calculateFunctionValueSum(final List<Integer> population, final double offset) {
         return population
-                .map(Individual::toInt)
                 .map(x -> QuadraticEquation.calculateValue(x, a, b, c))
                 .map(f_x -> f_x + offset)
                 .sum()
                 .doubleValue();
     }
 
-    private double calculateOffset(final List<Individual> population) {
+    private double calculateOffset(final List<Integer> population) {
         return population
-                .map(Individual::toInt)
                 .map(x -> QuadraticEquation.calculateValue(x, a, b, c))
                 .min()
                 .map(lowestIndividual -> lowestIndividual < 0 ? Math.abs(lowestIndividual) : 0)

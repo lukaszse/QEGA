@@ -1,9 +1,9 @@
 package pl.com.seremak.service;
 
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
 import io.vavr.collection.List;
 import io.vavr.collection.Stream;
-import io.vavr.collection.Traversable;
-import io.vavr.control.Option;
 import jakarta.inject.Singleton;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -41,13 +41,14 @@ public class GeneticAlgorithmService {
         writer.writeResult(results);
     }
 
-    private int singleRun() {
-        return Stream.rangeClosed(1, params.getPopulationsNumber())
+    private Tuple2<Integer, Double> singleRun() {
+        var list = Stream.rangeClosed(1, params.getPopulationsNumber())
                 .map(i -> createNextGeneration())
                 .map(Population::toIntegerList)
-                .map(Traversable::max)
-                .map(Option::get)
-                .get();
+                .map(this::toTupleList)
+                .map(this::getMax)
+                .collect(List.collector());
+        return getMax(list);
     }
 
     private Population createNextGeneration() {
@@ -65,10 +66,23 @@ public class GeneticAlgorithmService {
         selectionService.setParameters(params.getA(), params.getB(), params.getC(), params.getIndividualsNumber());
     }
 
-    private String createResultString(final int x) {
-        return Stream.of(QuadraticEquation.calculateValue(x, params.getA(), params.getB(), params.getC()))
-                .map(Double::intValue)
-                .map(y -> "f(%d) %d".formatted(x, y))
+    private List<Tuple2<Integer, Double>> toTupleList(final List<Integer> individualsValues) {
+        return individualsValues
+                .map(x -> Tuple.of(x, QuadraticEquation.calculateValue(x, params.getA(), params.getB(), params.getC())))
+                .collect(List.collector());
+    }
+
+    private Tuple2<Integer, Double> getMax(final List<Tuple2<Integer, Double>> tupleList) {
+        var newTuple = Tuple.of(0, Double.NEGATIVE_INFINITY);
+        for(var tuple : tupleList) {
+            if(tuple._2 > newTuple._2) newTuple = Tuple.of(tuple._1, tuple._2);
+        }
+        return newTuple;
+    }
+
+    private String createResultString(final Tuple2<Integer, Double> result) {
+        return Stream.of(result)
+                .map(tuple -> "f(%d) %d".formatted(tuple._1, tuple._2.intValue()))
                 .get();
     }
 }
