@@ -28,12 +28,12 @@ public class GeneticAlgorithmService {
     private List<String> results;
 
     public final void run() {
-        setParameters(params);
-        writer = new ResultFileWriter();
+        setup(params);
         population.generatePopulation(params.getIndividualsNumber());
 
         var results = Stream.rangeClosed(1, params.getRunsNumber())
                 .map(i -> singleRun())
+                .map(this::getMax)
                 .map(this::createResultString)
                 .peek(log::info)
                 .toList();
@@ -41,14 +41,13 @@ public class GeneticAlgorithmService {
         writer.writeResult(results);
     }
 
-    private Tuple2<Integer, Double> singleRun() {
-        var list = Stream.rangeClosed(1, params.getPopulationsNumber())
+    private List<Tuple2<Integer, Double>> singleRun() {
+        return Stream.rangeClosed(1, params.getPopulationsNumber())
                 .map(i -> createNextGeneration())
                 .map(Population::toIntegerList)
                 .map(this::toTupleList)
                 .map(this::getMax)
                 .collect(List.collector());
-        return getMax(list);
     }
 
     private Population createNextGeneration() {
@@ -60,10 +59,11 @@ public class GeneticAlgorithmService {
                 .get();
     }
 
-    private void setParameters(final InputParameters params) {
+    private void setup(final InputParameters params) {
         interbreedingService.setInterbreedingProbability(params.getInterbreedingProbability());
         mutationService.setMutationProbability(params.getMutationProbability());
         selectionService.setParameters(params.getA(), params.getB(), params.getC(), params.getIndividualsNumber());
+        writer = new ResultFileWriter();
     }
 
     private List<Tuple2<Integer, Double>> toTupleList(final List<Integer> individualsValues) {
