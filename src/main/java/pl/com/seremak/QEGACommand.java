@@ -40,6 +40,7 @@ public class QEGACommand implements Runnable {
     @Option(names = {"-m", "--mutation"}, description = "Mutation probability of individuals", defaultValue = "0.15")
     double mutationProbability;
 
+
     public static void main(String[] args) throws Exception {
         PicocliRunner.run(QEGACommand.class, args);
     }

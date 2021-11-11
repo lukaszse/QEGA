@@ -27,9 +27,9 @@ public class InterbreedingService {
     }
 
     public List<Individual> performInterbreedingInPopulation(final Population population) {
+        var parents = Population.toIntegerList(population.getIndividuals());
         parentPopulation = List.ofAll(population.getIndividuals());
         List<Individual> childPopulation = List.empty();
-
         while (parentPopulation.length() > 1) {
             var interbreedingResult =
                     Stream.of(drawIndividualPair())
@@ -38,7 +38,9 @@ public class InterbreedingService {
                             .collect(Collectors.toList());
             childPopulation = childPopulation.appendAll(interbreedingResult);
         }
-        return childPopulation.appendAll(parentPopulation);
+        childPopulation = childPopulation.appendAll(parentPopulation);
+        var children = Population.toIntegerList(childPopulation);
+        return childPopulation;
     }
 
     private Tuple2<Individual, Individual> interbreedPairOrCopyParents(final Tuple2<Individual, Individual> drawnPair) {

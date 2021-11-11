@@ -23,27 +23,28 @@ public class GeneticAlgorithmService {
     private final MutationService mutationService;
     private final InterbreedingService interbreedingService;
     private final SelectionService selectionService;
-    private final Population population;
+    private Population population;
     private ResultFileWriter writer;
     private InputParameters params;
 
-    public final void run() {
+    public final List<String> run() {
         setup(params);
-        population.generatePopulation(params.getIndividualsNumber());
-
         var results = Stream.rangeClosed(1, params.getRunsNumber())
+                .peek(i -> population.generatePopulation(params.getIndividualsNumber()))
                 .map(i -> singleRun())
                 .map(this::getMax)
                 .map(this::createResultString)
-                .peek(log::info)
+//                .peek(log::info)
                 .toList();
-
-        writer.writeResult(results);
+//        writer.writeResult(results);
+//        Statistics.printStatistics(results);
+        return results;
     }
 
     private List<Tuple2<Integer, Double>> singleRun() {
         return Stream.rangeClosed(1, params.getPopulationsNumber())
                 .map(i -> createNextGeneration())
+                .peek(this::setPopulation)
                 .map(Population::toIntegerList)
                 .map(this::toArgumentAndFunctionValueTuple)
                 .map(this::getMax)
@@ -64,6 +65,7 @@ public class GeneticAlgorithmService {
         mutationService.setMutationProbability(params.getMutationProbability());
         selectionService.setParameters(params.getA(), params.getB(), params.getC(), params.getIndividualsNumber());
         writer = new ResultFileWriter();
+        population = new Population();
     }
 
     private List<Tuple2<Integer, Double>> toArgumentAndFunctionValueTuple(final List<Integer> individualsValues) {

@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-@ThreadLocal
 public class Population {
 
     private List<Individual> individuals;
