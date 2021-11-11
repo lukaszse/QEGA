@@ -55,7 +55,7 @@ class SelectionServiceTest extends Specification {
         2 | 2 | 2 | 0.0015
         3 | 1 | 0 | 0.0010
         2 | 0 | 0 | 0.0009
-        0 | 0 | 0 | 0
+        0 | 0 | 0 | 0.25
     }
 
     def 'should create List of ProbabilityIntervals for population' () {

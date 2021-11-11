@@ -49,7 +49,7 @@ class AlgorithmTuner extends Specification {
 
         where:
         interbreedingProbability | mutationProbability | individualsNumber | populationsNumber
-        0.7                      | 0.05                 | 5                | 30
+        0.8                      | 0.08                 | 6                | 25
 
     }
 }
