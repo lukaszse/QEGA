@@ -31,27 +31,25 @@ public class GeneticAlgorithmService {
     public final List<String> run() {
         setup(params);
         var results = Stream.rangeClosed(1, params.getRunsNumber())
-                .peek(i -> log.info("Run no: {}", i))
                 .peek(i -> population.generatePopulation(params.getIndividualsNumber()))
                 .map(i -> singleRun())
                 .map(this::getMax)
                 .map(this::createResultString)
                 .peek(log::info)
                 .toList();
-        writer.writeResult(results);
+//        writer.writeResult(results);
         Statistics.printStatistics(results);
         return results;
     }
 
     private List<Tuple2<Integer, Double>> singleRun() {
+        return toArgumentAndFunctionValueTuple(getLastGeneration());
+    }
+
+    private Population getLastGeneration() {
         return Stream.rangeClosed(1, params.getPopulationsNumber())
                 .map(i -> createNextGeneration())
-                .peek(pop -> log.info("population: {}", Population.toIntegerList(pop.getIndividuals())))
-                .peek(this::setPopulation)
-                .map(Population::toIntegerList)
-                .map(this::toArgumentAndFunctionValueTuple)
-                .map(this::getMax)
-                .collect(List.collector());
+                .last();
     }
 
     private Population createNextGeneration() {
@@ -60,6 +58,8 @@ public class GeneticAlgorithmService {
                 .map(mutationService::performMutation)
                 .map(selectionService::selectNewPopulation)
                 .map(Population::of)
+//                .peek(pop -> log.info("pop {}", pop.toIntegerList()))
+                .peek(this::setPopulation)
                 .get();
     }
 
@@ -71,7 +71,8 @@ public class GeneticAlgorithmService {
         population = new Population();
     }
 
-    private List<Tuple2<Integer, Double>> toArgumentAndFunctionValueTuple(final List<Integer> individualsValues) {
+    private List<Tuple2<Integer, Double>> toArgumentAndFunctionValueTuple(final Population population) {
+        var individualsValues = population.toIntegerList();
         return individualsValues
                 .map(x -> Tuple.of(x, QuadraticEquation.calculateValue(x, params.getA(), params.getB(), params.getC())))
                 .collect(List.collector());
@@ -79,8 +80,8 @@ public class GeneticAlgorithmService {
 
     private Tuple2<Integer, Double> getMax(final List<Tuple2<Integer, Double>> tupleList) {
         var newTuple = Tuple.of(0, Double.NEGATIVE_INFINITY);
-        for(var tuple : tupleList) {
-            if(tuple._2 > newTuple._2) newTuple = Tuple.of(tuple._1, tuple._2);
+        for (var tuple : tupleList) {
+            if (tuple._2 > newTuple._2) newTuple = Tuple.of(tuple._1, tuple._2);
         }
         return newTuple;
     }

@@ -25,12 +25,12 @@ class AlgorithmTuner extends Specification {
                 .mutationProbability(mutationProbability)
                 .populationsNumber(populationsNumber)
                 .individualsNumber(individualsNumber)
-                .runsNumber(2)
+                .runsNumber(40)
                 .build())
 
 
         when:
-        def sdList = Stream.rangeClosed(1, 2)
+        def sdList = Stream.rangeClosed(1, 10)
                 .map(i -> geneticAlgorithmService.run())
                 .map(result -> Statistics.parseFunctionValuesList(result))
                 .map(functionValueList -> Statistics.sd(functionValueList))
@@ -49,7 +49,7 @@ class AlgorithmTuner extends Specification {
 
         where:
         interbreedingProbability | mutationProbability | individualsNumber | populationsNumber
-        0.9                      | 0.3                 | 10                | 15
+        0.7                      | 0.05                 | 5                | 30
 
     }
 }
