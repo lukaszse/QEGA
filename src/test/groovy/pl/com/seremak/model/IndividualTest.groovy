@@ -1,10 +1,16 @@
-package pl.com.seremak
+package pl.com.seremak.model
 
+import io.vavr.collection.List
+import jakarta.inject.Inject
+import pl.com.seremak.model.Individual
 import spock.lang.Specification
 
 class IndividualTest extends Specification {
 
-    def 'should generate Individual' () {
+    @Inject
+    Individual individual
+
+    def 'should generate Individual'() {
 
         when: 'make new individual'
         def individual = new Individual()
@@ -21,7 +27,7 @@ class IndividualTest extends Specification {
         individual.setIndividual(givenIndividual)
 
         when:
-        def result = individual.toInt();
+        def result = individual.toInt()
 
         then:
         result == intValue
@@ -31,6 +37,7 @@ class IndividualTest extends Specification {
         0        | List.of(false, false, false, false, false, false, false, false)
         1        | List.of(false, false, false, false, false, false, false, true)
         9        | List.of(false, false, false, false, true, false, false, true)
+        65       | List.of(false, true, false, false, false, false, false, true)
         24       | List.of(false, false, false, true, true, false, false, false)
         254      | List.of(true, true, true, true, true, true, true, false)
         255      | List.of(true, true, true, true, true, true, true, true)
