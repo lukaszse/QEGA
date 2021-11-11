@@ -10,13 +10,25 @@ public class Statistics {
 
     public static void printStatistics(final List<String> results) {
         var functionValuesList = parseFunctionValuesList(results);
-        log.info("ResultsNumber={}, Mean={}, Median={}, StandardDeviation={}", functionValuesList.length(), mean(functionValuesList), median(functionValuesList), sd(functionValuesList));
+        var argumentList = parseFunctionArgument(results);
+        log.info("ResultsNumber={}", functionValuesList.length());
+        log.info("x: mean={}, median={}, standard deviation={}", mean(argumentList), median(argumentList), sd(argumentList));
+        log.info("F(x): mean={}, median={}, standard deviation={}", mean(functionValuesList), median(functionValuesList), sd(functionValuesList));
+
     }
 
     public static List<Double> parseFunctionValuesList(final List<String> results) {
         return results
                 .map(resultString -> List.of(resultString.split(" ")))
                 .map(List::last)
+                .map(Double::parseDouble)
+                .collect(List.collector());
+    }
+
+    public static List<Double> parseFunctionArgument(final List<String> results) {
+        return results
+                .map(resultString -> List.of(resultString.split("[()]")))
+                .map(stringList -> stringList.get(1))
                 .map(Double::parseDouble)
                 .collect(List.collector());
     }

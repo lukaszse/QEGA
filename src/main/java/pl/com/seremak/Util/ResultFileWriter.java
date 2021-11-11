@@ -18,16 +18,20 @@ public class ResultFileWriter {
     public static final String DATE_PATTERN = "yyMMdd_HHmmss";
     private static final String FILE_NAME_PATTERN = "SGA_result_%s.txt";
     private final Path fileName;
+    private final boolean testMode;
 
-    public ResultFileWriter() {
+    public ResultFileWriter(final boolean testMode) {
+        this.testMode = testMode;
         this.fileName = createFileName();
     }
 
     public void writeResult(final List<String> results) {
-        try (BufferedWriter writer = Files.newBufferedWriter(fileName)) {
-            results.forEach(result -> writeLine(result, writer));
-        } catch (IOException e) {
-            log.error("Cannot save file={}. Error={}", fileName, e.getMessage());
+        if(!testMode) {
+            try (BufferedWriter writer = Files.newBufferedWriter(fileName)) {
+                results.forEach(result -> writeLine(result, writer));
+            } catch (IOException e) {
+                log.error("Cannot save file={}. Error={}", fileName, e.getMessage());
+            }
         }
     }
 

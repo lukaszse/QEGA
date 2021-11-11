@@ -1,5 +1,6 @@
 package pl.com.seremak.service;
 
+import io.micronaut.context.annotation.Value;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.collection.List;
@@ -28,6 +29,9 @@ public class GeneticAlgorithmService {
     private ResultFileWriter writer;
     private InputParameters params;
 
+    @Value("${testMode:false}")
+    boolean testMode;
+
     public final List<String> run() {
         setup(params);
         var results = Stream.rangeClosed(1, params.getRunsNumber())
@@ -37,7 +41,7 @@ public class GeneticAlgorithmService {
                 .map(this::createResultString)
                 .peek(log::info)
                 .toList();
-//        writer.writeResult(results);
+        writer.writeResult(results);
         Statistics.printStatistics(results);
         return results;
     }
@@ -58,7 +62,7 @@ public class GeneticAlgorithmService {
                 .map(mutationService::performMutation)
                 .map(selectionService::selectNewPopulation)
                 .map(Population::of)
-//                .peek(pop -> log.info("pop {}", pop.toIntegerList()))
+                .peek(this::logPopulation)
                 .peek(this::setPopulation)
                 .get();
     }
@@ -67,7 +71,7 @@ public class GeneticAlgorithmService {
         interbreedingService.setInterbreedingProbability(params.getInterbreedingProbability());
         mutationService.setMutationProbability(params.getMutationProbability());
         selectionService.setParameters(params.getA(), params.getB(), params.getC(), params.getIndividualsNumber());
-        writer = new ResultFileWriter();
+        writer = new ResultFileWriter(testMode);
         population = new Population();
     }
 
@@ -90,5 +94,9 @@ public class GeneticAlgorithmService {
         return Stream.of(result)
                 .map(tuple -> RESULT_LINE_PATTERN.formatted(tuple._1, tuple._2.intValue()))
                 .get();
+    }
+
+    private void logPopulation(final Population population) {
+        if (testMode) log.info("Population={}", population.toIntegerList());
     }
 }

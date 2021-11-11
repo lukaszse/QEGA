@@ -35,14 +35,11 @@ public class SelectionService {
     }
 
     public List<Individual> selectNewPopulation(final List<Individual> population) {
-        var pop = Population.toIntegerList(population);
         var integerPopulation = Population.toIntegerList(population);
         var probabilityIntervals = calculateProbabilityIntervals(integerPopulation);
-        var newGeneration = Stream.rangeClosed(1, individualsNumber)
+        return Stream.rangeClosed(1, individualsNumber)
                 .map(i -> drawWithRouletteWheel(population, probabilityIntervals))
                 .collect(List.collector());
-        var newPop = Population.toIntegerList(newGeneration);
-        return newGeneration;
     }
 
     private Individual drawWithRouletteWheel(final List<Individual> population, List<ProbabilityInterval> probabilityIntervals) {

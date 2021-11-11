@@ -12,7 +12,7 @@ import spock.lang.Specification
 class AlgorithmTuner extends Specification {
 
     @Inject
-    GeneticAlgorithmService geneticAlgorithmService;
+    GeneticAlgorithmService geneticAlgorithmService
 
     def 'tune algorithm'() {
 
@@ -49,7 +49,7 @@ class AlgorithmTuner extends Specification {
 
         where:
         interbreedingProbability | mutationProbability | individualsNumber | populationsNumber
-        0.8                      | 0.08                 | 6                | 25
+        0.8                      | 0.07                 | 30                | 5
 
     }
 }

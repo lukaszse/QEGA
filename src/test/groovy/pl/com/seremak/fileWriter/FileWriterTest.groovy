@@ -9,7 +9,7 @@ class FileWriterTest extends Specification{
     def 'should crate file path'() {
 
         given:
-        def fileWriter = new ResultFileWriter()
+        def fileWriter = new ResultFileWriter(false)
 
         when:
         def fileName = fileWriter.createFileName()

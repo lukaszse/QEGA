@@ -27,20 +27,22 @@ public class InterbreedingService {
     }
 
     public List<Individual> performInterbreedingInPopulation(final Population population) {
-        var parents = Population.toIntegerList(population.getIndividuals());
         parentPopulation = List.ofAll(population.getIndividuals());
         List<Individual> childPopulation = List.empty();
         while (parentPopulation.length() > 1) {
-            var interbreedingResult =
-                    Stream.of(drawIndividualPair())
-                            .map(this::interbreedPairOrCopyParents)
-                            .flatMap(result -> result.apply(Stream::of))
-                            .collect(Collectors.toList());
-            childPopulation = childPopulation.appendAll(interbreedingResult);
+            childPopulation = interbreedIndividualsPair(childPopulation);
         }
         childPopulation = childPopulation.appendAll(parentPopulation);
-        var children = Population.toIntegerList(childPopulation);
         return childPopulation;
+    }
+
+    private List<Individual> interbreedIndividualsPair(List<Individual> childPopulation) {
+        var interbreedingResult =
+                Stream.of(drawIndividualPair())
+                        .map(this::interbreedPairOrCopyParents)
+                        .flatMap(result -> result.apply(Stream::of))
+                        .collect(Collectors.toList());
+        return childPopulation.appendAll(interbreedingResult);
     }
 
     private Tuple2<Individual, Individual> interbreedPairOrCopyParents(final Tuple2<Individual, Individual> drawnPair) {

@@ -19,10 +19,10 @@ public class QEGACommand implements Runnable {
     @Option(names = {"-a"}, description = "Factor a", defaultValue = "-1")
     int a;
 
-    @Option(names = {"-b"}, description = "Factor b", defaultValue = "40")
+    @Option(names = {"-b"}, description = "Factor b", defaultValue = "100")
     int b;
 
-    @Option(names = {"-c"}, description = "Factor c", defaultValue = "-400")
+    @Option(names = {"-c"}, description = "Factor c", defaultValue = "0")
     int c;
 
     @Option(names = {"-r", "--runs"}, description = "Number of program runs", defaultValue = "40")
