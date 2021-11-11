@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.com.seremak.Util.QuadraticEquation;
 import pl.com.seremak.Util.ResultFileWriter;
+import pl.com.seremak.Util.Statistics;
 import pl.com.seremak.model.InputParameters;
 import pl.com.seremak.model.Population;
 
@@ -30,20 +31,22 @@ public class GeneticAlgorithmService {
     public final List<String> run() {
         setup(params);
         var results = Stream.rangeClosed(1, params.getRunsNumber())
+                .peek(i -> log.info("Run no: {}", i))
                 .peek(i -> population.generatePopulation(params.getIndividualsNumber()))
                 .map(i -> singleRun())
                 .map(this::getMax)
                 .map(this::createResultString)
-//                .peek(log::info)
+                .peek(log::info)
                 .toList();
-//        writer.writeResult(results);
-//        Statistics.printStatistics(results);
+        writer.writeResult(results);
+        Statistics.printStatistics(results);
         return results;
     }
 
     private List<Tuple2<Integer, Double>> singleRun() {
         return Stream.rangeClosed(1, params.getPopulationsNumber())
                 .map(i -> createNextGeneration())
+                .peek(pop -> log.info("population: {}", Population.toIntegerList(pop.getIndividuals())))
                 .peek(this::setPopulation)
                 .map(Population::toIntegerList)
                 .map(this::toArgumentAndFunctionValueTuple)

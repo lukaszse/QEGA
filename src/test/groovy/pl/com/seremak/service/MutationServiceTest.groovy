@@ -8,8 +8,6 @@ import spock.lang.Specification
 @MicronautTest
 class MutationServiceTest extends Specification {
 
-    @Inject
-    Population population
 
     @Inject
     MutationService mutationService
@@ -18,6 +16,7 @@ class MutationServiceTest extends Specification {
     def 'should mutate population properly' () {
 
         given: 'creating new population'
+        def population = new Population()
         population.generatePopulation(individualsNumber)
 
         and: 'define mutation probability'

@@ -4,6 +4,7 @@ import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import io.vavr.collection.List
 import jakarta.inject.Inject
 import pl.com.seremak.model.Individual
+import pl.com.seremak.model.Population
 import pl.com.seremak.model.ProbabilityInterval
 import spock.lang.Specification
 
@@ -16,13 +17,13 @@ class SelectionServiceTest extends Specification {
     def 'should calculate sum of function values for given population'() {
 
         given: 'prepare individuals'
-        def population = preparePopulation()
+        def population = Population.toIntegerList(preparePopulation())
 
         and: 'set input quadratic function factors'
         selectionService.setParameters(a, b, c, 1)
 
         when: 'calculate sum'
-        def sum = selectionService.calculateFunctionValueSum(population, 0)
+        def sum = selectionService.calculateFunctionValueSum(population, 0d)
 
         then:
         sum == expectedResult
@@ -38,7 +39,7 @@ class SelectionServiceTest extends Specification {
     def 'should calculate probability of individual selection'() {
 
         given: 'prepare individuals'
-        def population = preparePopulation()
+        def population = Population.toIntegerList(preparePopulation())
 
         and: 'set input quadratic function factors'
         selectionService.setParameters(a, b, c, 1)
@@ -60,7 +61,7 @@ class SelectionServiceTest extends Specification {
     def 'should create List of ProbabilityIntervals for population' () {
 
         given: 'prepare individuals'
-        def population = preparePopulation()
+        def population = Population.toIntegerList(preparePopulation())
 
         and: 'set input quadratic function factors'
         selectionService.setParameters(a, b, c, 1)

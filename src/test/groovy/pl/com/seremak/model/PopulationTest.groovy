@@ -8,8 +8,7 @@ import spock.lang.Specification
 @MicronautTest
 class PopulationTest extends Specification {
 
-    @Inject
-    Population population
+    Population population = new Population();
 
     def 'should generate population with correct number of individuals'() {
 

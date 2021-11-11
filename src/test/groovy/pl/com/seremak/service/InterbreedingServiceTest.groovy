@@ -10,14 +10,12 @@ import spock.lang.Specification
 class InterbreedingServiceTest extends Specification {
 
     @Inject
-    Population population
-
-    @Inject
     InterbreedingService interbreedingService
 
     def 'should draw pair of individuals and remove it from list'() {
 
         given: 'create new population'
+        def population = new Population()
         population.generatePopulation(individualsNumber)
 
         and: 'define interbreedingProbability'
@@ -47,6 +45,7 @@ class InterbreedingServiceTest extends Specification {
     def 'should interbreed pair of individuals correctly'() {
 
         given: 'creating new population'
+        def population = new Population()
         population.generatePopulation(individualsNumber)
 
         and: 'define interbreeding probability'

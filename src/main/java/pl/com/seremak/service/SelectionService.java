@@ -2,15 +2,16 @@ package pl.com.seremak.service;
 
 import io.vavr.collection.List;
 import io.vavr.collection.Stream;
-import io.vavr.collection.Traversable;
 import jakarta.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
+import pl.com.seremak.Util.QuadraticEquation;
 import pl.com.seremak.model.Individual;
 import pl.com.seremak.model.Population;
 import pl.com.seremak.model.ProbabilityInterval;
-import pl.com.seremak.Util.QuadraticEquation;
 
 import java.util.Random;
 
+@Slf4j
 @Singleton
 public class SelectionService {
 
@@ -36,7 +37,7 @@ public class SelectionService {
     public List<Individual> selectNewPopulation(final List<Individual> population) {
         var integerPopulation = Population.toIntegerList(population);
         var probabilityIntervals = calculateProbabilityIntervals(integerPopulation);
-        return Stream.range(0, individualsNumber)
+        return Stream.rangeClosed(1, individualsNumber)
                 .map(i -> drawWithRouletteWheel(population, probabilityIntervals))
                 .collect(List.collector());
     }
@@ -97,7 +98,7 @@ public class SelectionService {
         return population
                 .map(x -> QuadraticEquation.calculateValue(x, a, b, c))
                 .min()
-                .map(lowestIndividual -> lowestIndividual < 0 ? Math.abs(lowestIndividual) : 0)
+                .map(lowestIndividual -> lowestIndividual <= 0 ? Math.abs(lowestIndividual)+1 : 0)
                 .get();
     }
 }
