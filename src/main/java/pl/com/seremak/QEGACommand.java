@@ -47,7 +47,7 @@ public class QEGACommand implements Runnable {
     public void run() {
 
         log.info("QEGA application started");
-        log.info("Input parameters: number of runs = {}, number of population = {}, number of individuals = {}", runsNumber, populationsNumber, individualsNumber);
+        log.info("Input parameters: number of runs = {}, number of populations = {}, number of individuals = {}", runsNumber, populationsNumber, individualsNumber);
         log.info("interbreeding probability = {}, mutation probability {}", interbreedingProbability, mutationProbability);
 
         log.info("Looking for maximum of function: %d*x^2 + %d*x + %d".formatted(a, b, c));

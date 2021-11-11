@@ -19,13 +19,13 @@ import pl.com.seremak.model.Population;
 @RequiredArgsConstructor
 public class GeneticAlgorithmService {
 
+    public static final String RESULT_LINE_PATTERN = "f(%d) %d";
     private final MutationService mutationService;
     private final InterbreedingService interbreedingService;
     private final SelectionService selectionService;
     private final Population population;
     private ResultFileWriter writer;
     private InputParameters params;
-    private List<String> results;
 
     public final void run() {
         setup(params);
@@ -45,7 +45,7 @@ public class GeneticAlgorithmService {
         return Stream.rangeClosed(1, params.getPopulationsNumber())
                 .map(i -> createNextGeneration())
                 .map(Population::toIntegerList)
-                .map(this::toTupleList)
+                .map(this::toArgumentAndFunctionValueTuple)
                 .map(this::getMax)
                 .collect(List.collector());
     }
@@ -66,7 +66,7 @@ public class GeneticAlgorithmService {
         writer = new ResultFileWriter();
     }
 
-    private List<Tuple2<Integer, Double>> toTupleList(final List<Integer> individualsValues) {
+    private List<Tuple2<Integer, Double>> toArgumentAndFunctionValueTuple(final List<Integer> individualsValues) {
         return individualsValues
                 .map(x -> Tuple.of(x, QuadraticEquation.calculateValue(x, params.getA(), params.getB(), params.getC())))
                 .collect(List.collector());
@@ -82,7 +82,7 @@ public class GeneticAlgorithmService {
 
     private String createResultString(final Tuple2<Integer, Double> result) {
         return Stream.of(result)
-                .map(tuple -> "f(%d) %d".formatted(tuple._1, tuple._2.intValue()))
+                .map(tuple -> RESULT_LINE_PATTERN.formatted(tuple._1, tuple._2.intValue()))
                 .get();
     }
 }
