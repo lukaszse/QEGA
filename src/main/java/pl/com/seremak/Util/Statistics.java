@@ -3,8 +3,6 @@ package pl.com.seremak.Util;
 import io.vavr.collection.List;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.DoubleSummaryStatistics;
-
 @Slf4j
 public class Statistics {
 
