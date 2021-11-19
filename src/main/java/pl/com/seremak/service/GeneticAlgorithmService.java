@@ -21,7 +21,7 @@ import pl.com.seremak.model.Population;
 @RequiredArgsConstructor
 public class GeneticAlgorithmService {
 
-    public static final String RESULT_LINE_PATTERN = "f(%d) %d";
+    public static final String RESULT_LINE_PATTERN = "%d %d";
     private final MutationService mutationService;
     private final InterbreedingService interbreedingService;
     private final SelectionService selectionService;

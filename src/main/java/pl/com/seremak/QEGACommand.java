@@ -34,10 +34,10 @@ public class QEGACommand implements Runnable {
     @Option(names = {"-i", "--individuals"}, description = "Number of individuals in population (population size)", defaultValue = "10")
     int individualsNumber;
 
-    @Option(names = {"-t", "--interbreeding"}, description = "Interbreeding probability of individuals", defaultValue = "0.7")
+    @Option(names = {"-t", "--interbreeding"}, description = "Interbreeding probability of individuals", defaultValue = "0.8")
     double interbreedingProbability;
 
-    @Option(names = {"-m", "--mutation"}, description = "Mutation probability of individuals", defaultValue = "0.15")
+    @Option(names = {"-m", "--mutation"}, description = "Mutation probability of individuals", defaultValue = "0.07")
     double mutationProbability;
 
 
