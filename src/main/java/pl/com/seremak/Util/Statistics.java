@@ -25,8 +25,8 @@ public class Statistics {
 
     public static List<Double> parseFunctionArgument(final List<String> results) {
         return results
-                .map(resultString -> List.of(resultString.split("[()]")))
-                .map(stringList -> stringList.get(1))
+                .map(resultString -> List.of(resultString.split(" ")))
+                .map(stringList -> stringList.get(0))
                 .map(Double::parseDouble)
                 .collect(List.collector());
     }
